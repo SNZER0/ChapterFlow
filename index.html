@@ -70,6 +70,39 @@
             min-height: 44px;
             min-width: 44px;
         }
+
+        /* Custom Modal for Confirmation */
+        .custom-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .custom-modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .custom-modal-content {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        .custom-modal-overlay.visible .custom-modal-content {
+            transform: scale(1);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-white overflow-x-hidden">
@@ -100,7 +133,7 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="flex-1 flex flex-col items-center justify-center px-4 pb-8">
+    <main class="flex-1 flex flex-col items-center justify-end px-4 pb-6">
         <!-- Chapter Progress Tracker -->
         <div class="w-full max-w-2xl mb-6" role="region" aria-labelledby="progress-heading">
             <div class="glass-effect rounded-2xl sm:rounded-3xl p-4 sm:p-5">
@@ -167,6 +200,9 @@
                     <button id="resetBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Reset Timer" aria-label="Reset timer">
                         🔄 Reset
                     </button>
+                    <button id="resetProgressBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Reset Progress" aria-label="Reset all progress">
+                        🗑️ Reset All
+                    </button>
                     <button id="settingsBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Settings" aria-label="Open settings">
                         ⚙️ Settings
                     </button>
@@ -217,6 +253,19 @@
         </div>
     </div>
 
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="custom-modal-overlay">
+        <div class="custom-modal-content">
+            <h3 id="modalTitle" class="text-xl font-bold mb-4">Are you sure?</h3>
+            <p id="modalMessage" class="mb-6">This action cannot be undone.</p>
+            <div class="flex gap-4">
+                <button id="confirmBtn" class="button-primary flex-1 py-3 rounded-xl font-semibold text-white touch-button bg-red-500/80">Confirm</button>
+                <button id="cancelBtn" class="button-secondary flex-1 py-3 rounded-xl font-semibold text-white touch-button">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Footer -->
     <footer class="w-full flex justify-center py-4">
         <div class="glass-effect rounded-2xl px-4 sm:px-6 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
@@ -260,6 +309,7 @@
             timerDisplay: document.getElementById('timerDisplay'),
             startPauseBtn: document.getElementById('startPauseBtn'),
             resetBtn: document.getElementById('resetBtn'),
+            resetProgressBtn: document.getElementById('resetProgressBtn'),
             addTimeBtn: document.getElementById('addTimeBtn'),
             finishEarlyBtn: document.getElementById('finishEarlyBtn'),
             focusMode: document.getElementById('focusMode'),
@@ -276,7 +326,12 @@
             shortBreakLengthInput: document.getElementById('shortBreakLength'),
             longBreakLengthInput: document.getElementById('longBreakLength'),
             saveSettingsBtn: document.getElementById('saveSettings'),
-            cancelSettingsBtn: document.getElementById('cancelSettings')
+            cancelSettingsBtn: document.getElementById('cancelSettings'),
+            confirmationModal: document.getElementById('confirmationModal'),
+            modalTitle: document.getElementById('modalTitle'),
+            modalMessage: document.getElementById('modalMessage'),
+            confirmBtn: document.getElementById('confirmBtn'),
+            cancelBtn: document.getElementById('cancelBtn')
         };
 
         // ==================== LOCALSTORAGE ====================
@@ -348,6 +403,38 @@
             }
         }
 
+        // ==================== CONFIRMATION MODAL ====================
+
+        function showConfirmation(title, message, onConfirm) {
+            elements.modalTitle.textContent = title;
+            elements.modalMessage.textContent = message;
+            elements.confirmationModal.classList.add('visible');
+
+            const confirmHandler = () => {
+                onConfirm();
+                hideConfirmation();
+                cleanup();
+            };
+
+            const cancelHandler = () => {
+                hideConfirmation();
+                cleanup();
+            };
+            
+            const cleanup = () => {
+                elements.confirmBtn.removeEventListener('click', confirmHandler);
+                elements.cancelBtn.removeEventListener('click', cancelHandler);
+            }
+
+            elements.confirmBtn.addEventListener('click', confirmHandler);
+            elements.cancelBtn.addEventListener('click', cancelHandler);
+        }
+
+        function hideConfirmation() {
+            elements.confirmationModal.classList.remove('visible');
+        }
+
+
         // ==================== CHAPTER PROGRESS FUNCTIONS ====================
         
         function updateCurrentTask() {
@@ -389,6 +476,21 @@
             elements.totalChaptersInput.value = timerState.totalChapters;
             elements.completedChaptersSpan.textContent = timerState.completedChapters;
             elements.displayTotalChaptersSpan.textContent = timerState.totalChapters;
+        }
+        
+        function resetProgress() {
+            showConfirmation(
+                "Reset All Progress?",
+                "This will reset your completed chapters and focus sessions to zero. This action cannot be undone.",
+                () => {
+                    timerState.completedChapters = 0;
+                    timerState.focusSessionsCompleted = 0;
+                    updateProgressUI();
+                    updateCurrentTask();
+                    resetTimer(); // Also reset the current timer
+                    saveStateToLocalStorage();
+                }
+            );
         }
 
         // ==================== TIMER CORE FUNCTIONS ====================
@@ -539,6 +641,7 @@
             });
 
             elements.resetBtn.addEventListener('click', resetTimer);
+            elements.resetProgressBtn.addEventListener('click', resetProgress);
             elements.addTimeBtn.addEventListener('click', addFiveMinutes);
             elements.finishEarlyBtn.addEventListener('click', finishEarly);
 
@@ -566,6 +669,7 @@
                     resetTimer();
                 } else if (e.code === 'Escape') {
                     closeSettings();
+                    hideConfirmation();
                 }
             });
         }
@@ -583,11 +687,10 @@
             
             console.log('📚 ChapterFlow initialized successfully!');
             console.log('💾 State loaded from localStorage.');
-            console.log('⌨️ Keyboard shortcuts: Space (start/pause), R (reset), Esc (close settings)');
+            console.log('⌨️ Keyboard shortcuts: Space (start/pause), R (reset), Esc (close settings/modal)');
         }
 
         document.addEventListener('DOMContentLoaded', initializeApp);
     </script>
 </body>
 </html>
- 
