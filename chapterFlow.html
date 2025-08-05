@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChapterFlow - Focus Timer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .timer-display {
+            font-size: clamp(2.5rem, 12vw, 5rem);
+            font-weight: 700;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            line-height: 1;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .button-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .button-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .button-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        /* Logo animation */
+        .logo-pulse {
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Touch-friendly buttons */
+        .touch-button {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-white overflow-x-hidden">
+    <!-- Header with Logo and App Name -->
+    <header class="w-full p-4 sm:p-6">
+        <div class="flex items-center justify-center mb-4">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <!-- Logo -->
+                <div class="logo-pulse">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-effect flex items-center justify-center">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                        </svg>
+                    </div>
+                </div>
+                <!-- App Name -->
+                <div>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">ChapterFlow</h1>
+                    <p class="text-xs sm:text-sm opacity-80">Focus • Progress • Achieve</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Motivational Quote -->
+        <div class="text-center max-w-md mx-auto">
+            <p class="text-xs sm:text-sm opacity-80 italic">"The secret of getting ahead is getting started."</p>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 flex flex-col items-center justify-center px-4 pb-8">
+        <!-- Chapter Progress Tracker -->
+        <div class="w-full max-w-2xl mb-6" role="region" aria-labelledby="progress-heading">
+            <div class="glass-effect rounded-2xl sm:rounded-3xl p-4 sm:p-5">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+                    <div class="flex items-center gap-2 sm:gap-3">
+                        <label for="totalChapters" class="text-sm sm:text-base font-semibold whitespace-nowrap" id="progress-heading">Total Chapters:</label>
+                        <input 
+                            type="number" 
+                            id="totalChapters" 
+                            min="1" 
+                            max="100" 
+                            value="12"
+                            class="w-16 sm:w-20 px-2 sm:px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white text-center font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button"
+                        >
+                    </div>
+                    <div class="text-base sm:text-lg font-bold">
+                        Progress: <span id="completedChapters" class="text-yellow-300">0</span> / <span id="displayTotalChapters">12</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Timer Container -->
+        <div class="glass-effect rounded-2xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-2xl text-center" role="region" aria-labelledby="timer-heading">
+            <!-- Current Task Display -->
+            <div class="mb-4 sm:mb-6">
+                <h2 id="timer-heading" class="text-lg sm:text-2xl font-bold mb-2">Current Goal:</h2>
+                <p id="currentTask" class="text-base sm:text-xl opacity-90">Finish Chapter 1</p>
+            </div>
+
+            <!-- Timer Mode Buttons -->
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
+                <button id="focusMode" class="mode-btn button-primary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white active touch-button">
+                    Focus
+                </button>
+                <button id="shortBreakMode" class="mode-btn button-secondary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button">
+                    Short Break
+                </button>
+                <button id="longBreakMode" class="mode-btn button-secondary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button">
+                    Long Break
+                </button>
+            </div>
+
+            <!-- Timer Display -->
+            <div class="timer-display mb-6 sm:mb-8 text-white" id="timerDisplay" aria-live="polite">25:00</div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+                <!-- Primary Start/Pause Button -->
+                <div class="flex justify-center">
+                    <button id="startPauseBtn" class="button-primary px-8 sm:px-12 py-3 sm:py-4 rounded-xl font-bold text-lg sm:text-xl text-white touch-button">
+                        START
+                    </button>
+                </div>
+                
+                <!-- Secondary Action Buttons -->
+                <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
+                    <button id="addTimeBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Add 5 minutes" aria-label="Add 5 minutes">
+                        +5 min
+                    </button>
+                    <button id="finishEarlyBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Finish Early" aria-label="Finish session early">
+                        ✔️ Done
+                    </button>
+                    <button id="resetBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Reset Timer" aria-label="Reset timer">
+                        🔄 Reset
+                    </button>
+                    <button id="settingsBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Settings" aria-label="Open settings">
+                        ⚙️ Settings
+                    </button>
+                </div>
+            </div>
+
+            <!-- Completion Message -->
+            <div id="completionMessage" class="hidden mt-6">
+                <div class="text-2xl sm:text-3xl font-bold text-yellow-300 mb-4">🎉 Congratulations! 🎉</div>
+                <p class="text-lg sm:text-xl">You've completed all your chapters! Great work!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Settings Panel -->
+    <div id="settingsPanel" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass-effect rounded-xl p-6 sm:p-8 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <h3 class="text-xl sm:text-2xl font-bold mb-6 text-center">Timer Settings</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="focusLength" class="block text-sm font-semibold mb-2">Focus Length (minutes)</label>
+                    <input type="number" id="focusLength" min="1" max="120" value="25" 
+                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
+                </div>
+                
+                <div>
+                    <label for="shortBreakLength" class="block text-sm font-semibold mb-2">Short Break (minutes)</label>
+                    <input type="number" id="shortBreakLength" min="1" max="60" value="5" 
+                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
+                </div>
+                
+                <div>
+                    <label for="longBreakLength" class="block text-sm font-semibold mb-2">Long Break (minutes)</label>
+                    <input type="number" id="longBreakLength" min="1" max="60" value="15" 
+                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
+                </div>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3 mt-8">
+                <button id="saveSettings" class="button-primary flex-1 py-3 rounded-xl font-semibold text-white touch-button">
+                    Save Settings
+                </button>
+                <button id="cancelSettings" class="button-secondary flex-1 py-3 rounded-xl font-semibold text-white touch-button">
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="w-full flex justify-center py-4">
+        <div class="glass-effect rounded-2xl px-4 sm:px-6 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
+            <span class="opacity-80">Created by</span>
+            <span class="font-bold text-white">Sazzy</span>
+            <span class="opacity-60">•</span>
+            <a href="https://instagram.com/naimsazzad" 
+               target="_blank" 
+               rel="noopener noreferrer"
+               class="flex items-center gap-1 sm:gap-2 hover:text-pink-300 transition-colors duration-300 touch-button">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                <span class="hidden sm:inline">@naimsazzad</span>
+                <span class="sm:hidden">IG</span>
+            </a>
+        </div>
+    </footer>
+
+    <script>
+        // ==================== STATE MANAGEMENT ====================
+        
+        const timerState = {
+            isRunning: false,
+            currentMode: 'focus',
+            timeRemaining: 25 * 60,
+            timerInterval: null,
+            completedChapters: 0,
+            totalChapters: 12,
+            durations: {
+                focus: 25,
+                shortBreak: 5,
+                longBreak: 15
+            },
+            focusSessionsCompleted: 0
+        };
+
+        // ==================== DOM ELEMENTS ====================
+        
+        const elements = {
+            timerDisplay: document.getElementById('timerDisplay'),
+            startPauseBtn: document.getElementById('startPauseBtn'),
+            resetBtn: document.getElementById('resetBtn'),
+            addTimeBtn: document.getElementById('addTimeBtn'),
+            finishEarlyBtn: document.getElementById('finishEarlyBtn'),
+            focusMode: document.getElementById('focusMode'),
+            shortBreakMode: document.getElementById('shortBreakMode'),
+            longBreakMode: document.getElementById('longBreakMode'),
+            totalChaptersInput: document.getElementById('totalChapters'),
+            completedChaptersSpan: document.getElementById('completedChapters'),
+            displayTotalChaptersSpan: document.getElementById('displayTotalChapters'),
+            currentTask: document.getElementById('currentTask'),
+            completionMessage: document.getElementById('completionMessage'),
+            settingsBtn: document.getElementById('settingsBtn'),
+            settingsPanel: document.getElementById('settingsPanel'),
+            focusLengthInput: document.getElementById('focusLength'),
+            shortBreakLengthInput: document.getElementById('shortBreakLength'),
+            longBreakLengthInput: document.getElementById('longBreakLength'),
+            saveSettingsBtn: document.getElementById('saveSettings'),
+            cancelSettingsBtn: document.getElementById('cancelSettings')
+        };
+
+        // ==================== LOCALSTORAGE ====================
+
+        function saveStateToLocalStorage() {
+            try {
+                const stateToSave = {
+                    durations: timerState.durations,
+                    totalChapters: timerState.totalChapters,
+                    completedChapters: timerState.completedChapters,
+                    focusSessionsCompleted: timerState.focusSessionsCompleted
+                };
+                localStorage.setItem('chapterFlowState', JSON.stringify(stateToSave));
+            } catch (error) {
+                console.error("Could not save state to localStorage:", error);
+            }
+        }
+
+        function loadStateFromLocalStorage() {
+            try {
+                const savedState = localStorage.getItem('chapterFlowState');
+                if (savedState) {
+                    const parsedState = JSON.parse(savedState);
+                    Object.assign(timerState, parsedState);
+                }
+            } catch (error) {
+                console.error("Could not load state from localStorage:", error);
+            }
+        }
+
+        // ==================== UTILITY FUNCTIONS ====================
+        
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        function playNotificationSound() {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+                oscillator.frequency.linearRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                
+                gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.5);
+            } catch (error) {
+                console.log('Audio not supported on this device');
+            }
+        }
+
+        function updateTabTitle() {
+            if (timerState.isRunning) {
+                const timeStr = formatTime(timerState.timeRemaining);
+                const mode = timerState.currentMode.charAt(0).toUpperCase() + timerState.currentMode.slice(1);
+                document.title = `${timeStr} - ${mode} | ChapterFlow`;
+            } else {
+                document.title = 'ChapterFlow - Focus Timer';
+            }
+        }
+
+        // ==================== CHAPTER PROGRESS FUNCTIONS ====================
+        
+        function updateCurrentTask() {
+            const nextChapter = timerState.completedChapters + 1;
+            if (timerState.completedChapters >= timerState.totalChapters) {
+                elements.currentTask.textContent = "All chapters completed!  ";
+                elements.completionMessage.classList.remove('hidden');
+            } else {
+                elements.currentTask.textContent = `Finish Chapter ${nextChapter}`;
+                elements.completionMessage.classList.add('hidden');
+            }
+        }
+
+        function completeChapter() {
+            if (timerState.completedChapters < timerState.totalChapters) {
+                timerState.completedChapters++;
+                updateProgressUI();
+                updateCurrentTask();
+                saveStateToLocalStorage();
+                
+                playNotificationSound();
+                
+                elements.completedChaptersSpan.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    elements.completedChaptersSpan.style.transform = 'scale(1)';
+                }, 300);
+            }
+        }
+
+        function updateTotalChapters() {
+            const newTotal = parseInt(elements.totalChaptersInput.value) || 1;
+            timerState.totalChapters = Math.max(1, Math.min(100, newTotal));
+            updateProgressUI();
+            updateCurrentTask();
+            saveStateToLocalStorage();
+        }
+
+        function updateProgressUI() {
+            elements.totalChaptersInput.value = timerState.totalChapters;
+            elements.completedChaptersSpan.textContent = timerState.completedChapters;
+            elements.displayTotalChaptersSpan.textContent = timerState.totalChapters;
+        }
+
+        // ==================== TIMER CORE FUNCTIONS ====================
+        
+        function updateDisplay() {
+            elements.timerDisplay.textContent = formatTime(timerState.timeRemaining);
+            updateTabTitle();
+        }
+
+        function setTimerDuration() {
+            const duration = timerState.durations[timerState.currentMode];
+            timerState.timeRemaining = duration * 60;
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (timerState.completedChapters >= timerState.totalChapters) return;
+            timerState.isRunning = true;
+            elements.startPauseBtn.textContent = 'PAUSE';
+            
+            timerState.timerInterval = setInterval(() => {
+                timerState.timeRemaining--;
+                updateDisplay();
+                
+                if (timerState.timeRemaining <= 0) {
+                    completeTimerSession();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            timerState.isRunning = false;
+            elements.startPauseBtn.textContent = 'START';
+            clearInterval(timerState.timerInterval);
+            updateTabTitle();
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            setTimerDuration();
+        }
+
+        function addFiveMinutes() {
+            if (timerState.isRunning) {
+                timerState.timeRemaining += 5 * 60;
+                updateDisplay();
+                elements.addTimeBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    elements.addTimeBtn.style.transform = 'scale(1)';
+                }, 150);
+            }
+        }
+
+        function finishEarly() {
+            if (timerState.isRunning && timerState.currentMode === 'focus') {
+                pauseTimer();
+                completeChapter();
+                switchToBreakMode();
+                playNotificationSound();
+            }
+        }
+
+        function completeTimerSession() {
+            pauseTimer();
+            playNotificationSound();
+            
+            if (timerState.currentMode === 'focus') {
+                timerState.focusSessionsCompleted++;
+                completeChapter();
+            }
+            
+            autoSwitchMode();
+        }
+
+        // ==================== MODE SWITCHING FUNCTIONS ====================
+        
+        function switchToBreakMode() {
+            if (timerState.focusSessionsCompleted > 0 && timerState.focusSessionsCompleted % 4 === 0) {
+                switchMode('longBreak');
+            } else {
+                switchMode('shortBreak');
+            }
+        }
+
+        function autoSwitchMode() {
+            if (timerState.currentMode === 'focus') {
+                switchToBreakMode();
+            } else {
+                switchMode('focus');
+            }
+        }
+
+        function switchMode(mode) {
+            pauseTimer();
+            timerState.currentMode = mode;
+            
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active', 'button-primary');
+                btn.classList.add('button-secondary');
+            });
+            
+            const activeBtn = elements[mode + 'Mode'] || elements.focusMode;
+            activeBtn.classList.add('active', 'button-primary');
+            activeBtn.classList.remove('button-secondary');
+            
+            setTimerDuration();
+        }
+
+        // ==================== SETTINGS FUNCTIONS ====================
+        
+        function openSettings() {
+            elements.focusLengthInput.value = timerState.durations.focus;
+            elements.shortBreakLengthInput.value = timerState.durations.shortBreak;
+            elements.longBreakLengthInput.value = timerState.durations.longBreak;
+            
+            elements.settingsPanel.classList.remove('hidden');
+            elements.settingsPanel.classList.add('flex');
+        }
+
+        function closeSettings() {
+            elements.settingsPanel.classList.add('hidden');
+            elements.settingsPanel.classList.remove('flex');
+        }
+
+        function saveSettings() {
+            const newFocus = Math.max(1, Math.min(120, parseInt(elements.focusLengthInput.value) || 25));
+            const newShortBreak = Math.max(1, Math.min(60, parseInt(elements.shortBreakLengthInput.value) || 5));
+            const newLongBreak = Math.max(1, Math.min(60, parseInt(elements.longBreakLengthInput.value) || 15));
+            
+            timerState.durations.focus = newFocus;
+            timerState.durations.shortBreak = newShortBreak;
+            timerState.durations.longBreak = newLongBreak;
+            
+            saveStateToLocalStorage();
+            
+            if (!timerState.isRunning) {
+                setTimerDuration();
+            }
+            
+            closeSettings();
+        }
+
+        // ==================== EVENT LISTENERS ====================
+        
+        function setupEventListeners() {
+            elements.startPauseBtn.addEventListener('click', () => {
+                timerState.isRunning ? pauseTimer() : startTimer();
+            });
+
+            elements.resetBtn.addEventListener('click', resetTimer);
+            elements.addTimeBtn.addEventListener('click', addFiveMinutes);
+            elements.finishEarlyBtn.addEventListener('click', finishEarly);
+
+            elements.focusMode.addEventListener('click', () => switchMode('focus'));
+            elements.shortBreakMode.addEventListener('click', () => switchMode('shortBreak'));
+            elements.longBreakMode.addEventListener('click', () => switchMode('longBreak'));
+
+            elements.totalChaptersInput.addEventListener('change', updateTotalChapters);
+
+            elements.settingsBtn.addEventListener('click', openSettings);
+            elements.saveSettingsBtn.addEventListener('click', saveSettings);
+            elements.cancelSettingsBtn.addEventListener('click', closeSettings);
+
+            elements.settingsPanel.addEventListener('click', (e) => {
+                if (e.target === elements.settingsPanel) closeSettings();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (document.activeElement.tagName === 'INPUT') return;
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    elements.startPauseBtn.click();
+                } else if (e.code === 'KeyR') {
+                    e.preventDefault();
+                    resetTimer();
+                } else if (e.code === 'Escape') {
+                    closeSettings();
+                }
+            });
+        }
+
+        // ==================== INITIALIZATION ====================
+        
+        function initializeApp() {
+            loadStateFromLocalStorage();
+            
+            updateProgressUI();
+            updateCurrentTask();
+            switchMode(timerState.currentMode);
+            
+            setupEventListeners();
+            
+            console.log('📚 ChapterFlow initialized successfully!');
+            console.log('💾 State loaded from localStorage.');
+            console.log('⌨️ Keyboard shortcuts: Space (start/pause), R (reset), Esc (close settings)');
+        }
+
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
+ 
