@@ -1,66 +1,34 @@
-ChapterFlow - Focus Timer
-A visually stunning, Pomodoro-style focus timer designed to help you track progress and achieve your goals, one chapter at a time. ChapterFlow combines a beautiful "glassmorphism" interface with practical features to create an effective and enjoyable productivity tool.
+<img width="1899" height="927" alt="image" src="https://github.com/user-attachments/assets/d59043d3-57fc-4ee3-986a-27050f2cc892" />
+<h1>ChapterFlow - Focus Timer</h1>
+<p>A sleek Pomodoro-style focus timer to track chapters or tasks. Designed with a glassmorphism UI for a beautiful, productive experience.</p>
 
-✨ Features
-Pomodoro Timer: A classic timer with three modes to structure your workflow:
+<h2>✨ Features</h2>
+<ul>
+  <li><b>Pomodoro Timer:</b> Focus (25m), Short Break (5m), Long Break (15m) – fully customizable.</li>
+  <li><b>Chapter Tracker:</b> Set total chapters/tasks and track visually.</li>
+  <li><b>Persistent Memory:</b> Saves settings and progress via localStorage.</li>
+  <li><b>Stunning UI:</b> Glass effect, animated gradient, smooth transitions.</li>
+  <li><b>Responsive:</b> Works on all devices.</li>
+  <li><b>Audio Alerts</b> + <b>Keyboard Shortcuts</b> (Space = start/pause, R = reset).</li>
+</ul>
 
-Focus (default: 25 mins)
+<h2>🚀 How to Use</h2>
+<ol>
+  <li>Clone or download this repo.</li>
+  <li>Open <code>index.html</code> in your browser.</li>
+  <li>Set chapters and press <b>START</b>.</li>
+</ol>
 
-Short Break (default: 5 mins)
+<h2>💻 Tech Stack</h2>
+<ul>
+  <li>HTML5</li>
+  <li>Tailwind CSS + Custom CSS (glassmorphism, animations)</li>
+  <li>Vanilla JavaScript (ES6+)</li>
+</ul>
 
-Long Break (default: 15 mins)
-
-Chapter Progress Tracker: Set a total number of chapters (or tasks) and visually track your progress as you complete focus sessions.
-
-Customizable Durations: Easily adjust the length of focus, short break, and long break sessions via the settings panel.
-
-Persistent Memory: The app uses your browser's localStorage to remember your custom timer durations and chapter progress between sessions.
-
-Stunning UI:
-
-A sleek glass-effect design that's modern and easy on the eyes.
-
-A beautiful, subtly animated gradient background.
-
-Smooth transitions and hover effects for a premium feel.
-
-Fully Responsive: The layout adapts perfectly to any screen size, from mobile phones to desktop monitors.
-
-Audio Notifications: A simple, pleasant sound alerts you when a timer session is complete.
-
-Keyboard Shortcuts: Control the timer with your keyboard for maximum efficiency (Space to start/pause, R to reset).
-
-🚀 How to Use
-Getting started with ChapterFlow is simple:
-
-Download the code: Clone or download this repository to your local machine.
-
-Open the file: Navigate to the project folder and open the index.html file in your favorite web browser (like Chrome, Firefox, or Safari).
-
-Start Focusing: Set your total chapters, and press START to begin your first focus session!
-
-💻 Technologies Used
-ChapterFlow is built with a clean and simple stack, making it lightweight and easy to modify:
-
-HTML5: For the core structure of the application.
-
-Tailwind CSS: For a utility-first approach to styling.
-
-Custom CSS: For the unique glass effect, animated background, and other polished visuals.
-
-Vanilla JavaScript (ES6+): For all the timer logic, state management, and interactivity. No frameworks needed!
-
-🔮 Future Enhancements
-This project has a solid foundation with plenty of room to grow. Potential future features include:
-
-AI Study Planner: Integrate with an LLM like Gemini to generate study plans for specific topics.
-
-Task History: Keep a log of completed sessions and chapters.
-
-Themes: Allow users to choose different background gradients or color schemes.
-
-PWA Support: Make the app installable on desktop and mobile for an offline, native-app experience.
-
-👤 Credits
-This application was created by Sazzy. Entirely Vibe coded
-
+<h2>🔮 Future Ideas</h2>
+<ul>
+  <li>AI Study Planner</li>
+  <li>Task History</li>
+  <li>Themes & PWA Support</li>
+</ul>
