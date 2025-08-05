@@ -62,4 +62,5 @@ Themes: Allow users to choose different background gradients or color schemes.
 PWA Support: Make the app installable on desktop and mobile for an offline, native-app experience.
 
 👤 Credits
-This application was created by Sazzy. Find more on Instagram.
+This application was created by Sazzy. Entirely Vibe coded
+
