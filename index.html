@@ -7,11 +7,38 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-mid1: #764ba2;
+            --bg-gradient-mid2: #f093fb;
+            --bg-gradient-end: #f5576c;
+            --text-color: white;
+            --glass-bg: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --button-secondary-bg: rgba(255, 255, 255, 0.2);
+            --button-secondary-hover-bg: rgba(255, 255, 255, 0.3);
+            --yellow-accent: #fcd34d;
+        }
+
+        html.dark {
+            --bg-gradient-start: #1a202c;
+            --bg-gradient-mid1: #2d3748;
+            --bg-gradient-mid2: #4a5568;
+            --bg-gradient-end: #718096;
+            --text-color: #e2e8f0;
+            --glass-bg: rgba(0, 0, 0, 0.2);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --button-secondary-bg: rgba(0, 0, 0, 0.3);
+            --button-secondary-hover-bg: rgba(0, 0, 0, 0.4);
+            --yellow-accent: #f6e05e;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background: linear-gradient(-45deg, var(--bg-gradient-start), var(--bg-gradient-mid1), var(--bg-gradient-mid2), var(--bg-gradient-end));
             background-size: 400% 400%;
             animation: gradientShift 15s ease infinite;
+            color: var(--text-color);
         }
         
         @keyframes gradientShift {
@@ -21,10 +48,10 @@
         }
         
         .glass-effect {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid var(--glass-border);
         }
         
         .timer-display {
@@ -34,7 +61,6 @@
             line-height: 1;
         }
 
-        /* Circular Timer Container */
         .circular-timer {
             position: relative;
             width: clamp(200px, 40vw, 300px);
@@ -45,22 +71,20 @@
             justify-content: center;
         }
 
-        /* Inner Circle */
         .timer-circle {
             position: relative;
             width: 85%;
             height: 85%;
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 2;
-            border: 2px solid rgba(255, 255, 255, 0.3);
+            border: 2px solid var(--glass-border);
         }
 
-        /* Wiggly Border SVG */
         .wiggly-border {
             position: absolute;
             top: 50%;
@@ -71,10 +95,9 @@
             z-index: 1;
         }
 
-        /* Wiggly path animations */
         .wiggly-path {
             fill: none;
-            stroke: #667eea;
+            stroke: var(--bg-gradient-start);
             stroke-width: 4;
             filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
         }
@@ -84,80 +107,48 @@
         }
 
         .is-animating .wiggly-path.urgent {
-            stroke: #f093fb;
+            stroke: var(--bg-gradient-mid2);
             stroke-width: 5;
             animation: wigglePulseUrgent 1.5s ease-in-out infinite;
             filter: drop-shadow(0 0 15px rgba(240, 147, 251, 0.7));
         }
 
         .is-animating .wiggly-path.critical {
-            stroke: #f5576c;
+            stroke: var(--bg-gradient-end);
             stroke-width: 6;
             animation: wigglePulseCritical 1s ease-in-out infinite;
             filter: drop-shadow(0 0 20px rgba(245, 87, 108, 0.8));
         }
 
-        /* Wiggle animations with increasing intensity */
         @keyframes wigglePulse {
-            0%, 100% { 
-                transform: scale(1) rotate(0deg);
-                opacity: 0.8;
-            }
-            50% { 
-                transform: scale(1.02) rotate(1deg);
-                opacity: 1;
-            }
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+            50% { transform: scale(1.02) rotate(1deg); opacity: 1; }
         }
 
         @keyframes wigglePulseUrgent {
-            0%, 100% { 
-                transform: scale(1) rotate(0deg);
-                opacity: 0.9;
-            }
-            25% { 
-                transform: scale(1.03) rotate(-1.5deg);
-                opacity: 1;
-            }
-            75% { 
-                transform: scale(1.03) rotate(1.5deg);
-                opacity: 1;
-            }
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.9; }
+            25% { transform: scale(1.03) rotate(-1.5deg); opacity: 1; }
+            75% { transform: scale(1.03) rotate(1.5deg); opacity: 1; }
         }
 
         @keyframes wigglePulseCritical {
-            0%, 100% { 
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            20% { 
-                transform: scale(1.05) rotate(-2deg);
-                opacity: 0.9;
-            }
-            40% { 
-                transform: scale(1.04) rotate(2deg);
-                opacity: 1;
-            }
-            60% { 
-                transform: scale(1.05) rotate(-1.5deg);
-                opacity: 0.95;
-            }
-            80% { 
-                transform: scale(1.04) rotate(1.5deg);
-                opacity: 1;
-            }
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+            20% { transform: scale(1.05) rotate(-2deg); opacity: 0.9; }
+            40% { transform: scale(1.04) rotate(2deg); opacity: 1; }
+            60% { transform: scale(1.05) rotate(-1.5deg); opacity: 0.95; }
+            80% { transform: scale(1.04) rotate(1.5deg); opacity: 1; }
         }
 
-        /* Timer text inside circle */
         .circular-timer-text {
             font-size: clamp(1.8rem, 8vw, 3rem);
             font-weight: 700;
-            color: white;
+            color: var(--text-color);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             letter-spacing: -0.02em;
         }
         
         .button-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-mid1) 100%);
             transition: all 0.3s ease;
         }
         
@@ -167,17 +158,16 @@
         }
         
         .button-secondary {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--button-secondary-bg);
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
         
         .button-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: var(--button-secondary-hover-bg);
             transform: translateY(-1px);
         }
 
-        /* Logo animation */
         .logo-pulse {
             animation: logoPulse 2s ease-in-out infinite;
         }
@@ -187,89 +177,69 @@
             50% { transform: scale(1.05); }
         }
 
-        /* Touch-friendly buttons */
         .touch-button {
             min-height: 44px;
             min-width: 44px;
         }
 
-        /* Custom Modal for Confirmation */
         .custom-modal-overlay {
-            position: fixed;
-            inset: 0;
-            background-color: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(5px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
+            position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px); display: flex; align-items: center;
+            justify-content: center; z-index: 100; opacity: 0;
+            visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
         }
-        .custom-modal-overlay.visible {
-            opacity: 1;
-            visibility: visible;
-        }
+        .custom-modal-overlay.visible { opacity: 1; visibility: visible; }
         .custom-modal-content {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 1.5rem;
-            padding: 2rem;
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-            transform: scale(0.95);
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            border-radius: 1.5rem; padding: 2rem; width: 90%;
+            max-width: 400px; text-align: center; transform: scale(0.95);
             transition: transform 0.3s ease;
         }
-        .custom-modal-overlay.visible .custom-modal-content {
-            transform: scale(1);
-        }
+        .custom-modal-overlay.visible .custom-modal-content { transform: scale(1); }
+        .text-yellow-300 { color: var(--yellow-accent); }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-white overflow-x-hidden">
+<body class="min-h-screen flex flex-col overflow-x-hidden">
+    <!-- Corner Buttons -->
+    <div class="absolute top-4 right-4 flex gap-2 z-50">
+        <button id="themeToggleBtn" class="glass-effect p-2 rounded-full touch-button flex items-center justify-center" aria-label="Toggle theme">
+            <span id="sunIcon" class="text-2xl">☀️</span>
+            <span id="moonIcon" class="text-2xl hidden">🌙</span>
+        </button>
+        <button id="fullscreenBtn" class="glass-effect p-2 rounded-full touch-button flex items-center justify-center" aria-label="Toggle fullscreen">
+             <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+        </button>
+    </div>
+
     <!-- Header with Logo and App Name -->
     <header class="w-full p-4 sm:p-6">
         <div class="flex items-center justify-center mb-4">
             <div class="flex items-center gap-3 sm:gap-4">
-                <!-- Logo -->
                 <div class="logo-pulse">
                     <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl glass-effect flex items-center justify-center">
-                        <svg class="w-6 h-6 sm:w-7 sm:h-7 text-white" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
                         </svg>
                     </div>
                 </div>
-                <!-- App Name -->
                 <div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">ChapterFlow</h1>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold">ChapterFlow</h1>
                     <p class="text-xs sm:text-sm opacity-80">Focus • Progress • Achieve</p>
                 </div>
             </div>
         </div>
-
-        <!-- Motivational Quote -->
         <div class="text-center max-w-md mx-auto">
             <p class="text-xs sm:text-sm opacity-80 italic">"The secret of getting ahead is getting started."</p>
         </div>
     </header>
 
-    <!-- Main Content Container -->
     <main class="flex-1 flex flex-col items-center justify-end px-4 pb-2">
-        <!-- Chapter Progress Tracker -->
         <div class="w-full max-w-2xl mb-6" role="region" aria-labelledby="progress-heading">
             <div class="glass-effect rounded-2xl sm:rounded-3xl p-4 sm:p-5">
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
                     <div class="flex items-center gap-2 sm:gap-3">
                         <label for="totalChapters" class="text-sm sm:text-base font-semibold whitespace-nowrap" id="progress-heading">Total Chapters:</label>
-                        <input 
-                            type="number" 
-                            id="totalChapters" 
-                            min="1" 
-                            max="100" 
-                            value="12"
-                            class="w-16 sm:w-20 px-2 sm:px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-white text-center font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button"
-                        >
+                        <input type="number" id="totalChapters" min="1" max="100" value="12" class="w-16 sm:w-20 px-2 sm:px-3 py-2 rounded-lg bg-white/20 border border-white/30 text-center font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
                     </div>
                     <div class="text-base sm:text-lg font-bold">
                         Progress: <span id="completedChapters" class="text-yellow-300">0</span> / <span id="displayTotalChapters">12</span>
@@ -278,79 +248,38 @@
             </div>
         </div>
 
-        <!-- Main Timer Container -->
         <div class="glass-effect rounded-2xl sm:rounded-3xl p-6 sm:p-8 w-full max-w-2xl text-center" role="region" aria-labelledby="timer-heading">
-            <!-- Current Task Display -->
             <div class="mb-4 sm:mb-6">
                 <h2 id="timer-heading" class="text-lg sm:text-2xl font-bold mb-2">Current Goal:</h2>
                 <p id="currentTask" class="text-base sm:text-xl opacity-90">Finish Chapter 1</p>
             </div>
-
-            <!-- Timer Mode Buttons -->
             <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-6 sm:mb-8">
-                <button id="focusMode" class="mode-btn button-primary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white active touch-button">
-                    Focus
-                </button>
-                <button id="shortBreakMode" class="mode-btn button-secondary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button">
-                    Short Break
-                </button>
-                <button id="longBreakMode" class="mode-btn button-secondary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button">
-                    Long Break
-                </button>
+                <button id="focusMode" class="mode-btn button-primary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold active touch-button">Focus</button>
+                <button id="shortBreakMode" class="mode-btn button-secondary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold touch-button">Short Break</button>
+                <button id="longBreakMode" class="mode-btn button-secondary px-4 sm:px-6 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold touch-button">Long Break</button>
             </div>
-
-            <!-- Circular Timer Display -->
             <div class="mb-6 sm:mb-8">
                 <div class="circular-timer">
-                    <!-- Wiggly Border SVG -->
                     <svg id="wigglyBorder" class="wiggly-border" viewBox="0 0 200 200">
-                        <path id="wigglyPath" class="wiggly-path" d="M100,20 
-                            C120,25 140,35 155,55 
-                            C170,75 175,95 170,115 
-                            C165,135 150,150 130,160 
-                            C110,170 90,170 70,160 
-                            C50,150 35,135 30,115 
-                            C25,95 30,75 45,55 
-                            C60,35 80,25 100,20 Z"/>
+                        <path id="wigglyPath" class="wiggly-path" d="M100,20 C120,25 140,35 155,55 C170,75 175,95 170,115 C165,135 150,150 130,160 C110,170 90,170 70,160 C50,150 35,135 30,115 C25,95 30,75 45,55 C60,35 80,25 100,20 Z"/>
                     </svg>
-                    
-                    <!-- Inner Timer Circle -->
                     <div class="timer-circle">
                         <div id="timerDisplay" class="circular-timer-text" aria-live="polite">25:00</div>
                     </div>
                 </div>
             </div>
-
-            <!-- Action Buttons -->
             <div class="space-y-4">
-                <!-- Primary Start/Pause Button -->
                 <div class="flex justify-center">
-                    <button id="startPauseBtn" class="button-primary px-8 sm:px-12 py-3 sm:py-4 rounded-xl font-bold text-lg sm:text-xl text-white touch-button">
-                        START
-                    </button>
+                    <button id="startPauseBtn" class="button-primary px-8 sm:px-12 py-3 sm:py-4 rounded-xl font-bold text-lg sm:text-xl touch-button">START</button>
                 </div>
-                
-                <!-- Secondary Action Buttons -->
                 <div class="flex flex-wrap justify-center gap-2 sm:gap-3">
-                    <button id="addTimeBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Add 5 minutes" aria-label="Add 5 minutes">
-                        +5 min
-                    </button>
-                    <button id="finishEarlyBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Finish Early" aria-label="Finish session early">
-                        ✔️ Done
-                    </button>
-                    <button id="resetBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Reset Timer" aria-label="Reset timer">
-                        🔄 Reset
-                    </button>
-                    <button id="resetProgressBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Reset Progress" aria-label="Reset all progress">
-                        🗑️ Reset All
-                    </button>
-                    <button id="settingsBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold text-white touch-button" title="Settings" aria-label="Open settings">
-                        ⚙️ Settings
-                    </button>
+                    <button id="addTimeBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold touch-button" title="Add 5 minutes" aria-label="Add 5 minutes">+5 min</button>
+                    <button id="finishEarlyBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold touch-button" title="Finish Early" aria-label="Finish session early">✔️ Done</button>
+                    <button id="resetBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold touch-button" title="Reset Timer" aria-label="Reset timer">🔄 Reset</button>
+                    <button id="resetProgressBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold touch-button" title="Reset Progress" aria-label="Reset all progress">🗑️ Reset All</button>
+                    <button id="settingsBtn" class="button-secondary px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl font-semibold touch-button" title="Settings" aria-label="Open settings">⚙️ Settings</button>
                 </div>
             </div>
-
-            <!-- Completion Message -->
             <div id="completionMessage" class="hidden mt-6">
                 <div class="text-2xl sm:text-3xl font-bold text-yellow-300 mb-4">🎉 Congratulations! 🎉</div>
                 <p class="text-lg sm:text-xl">You've completed all your chapters! Great work!</p>
@@ -358,68 +287,48 @@
         </div>
     </main>
 
-    <!-- Settings Panel -->
     <div id="settingsPanel" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="glass-effect rounded-xl p-6 sm:p-8 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h3 class="text-xl sm:text-2xl font-bold mb-6 text-center">Timer Settings</h3>
-            
             <div class="space-y-4">
                 <div>
                     <label for="focusLength" class="block text-sm font-semibold mb-2">Focus Length (minutes)</label>
-                    <input type="number" id="focusLength" min="1" max="120" value="25" 
-                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
+                    <input type="number" id="focusLength" min="1" max="120" value="25" class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
                 </div>
-                
                 <div>
                     <label for="shortBreakLength" class="block text-sm font-semibold mb-2">Short Break (minutes)</label>
-                    <input type="number" id="shortBreakLength" min="1" max="60" value="5" 
-                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
+                    <input type="number" id="shortBreakLength" min="1" max="60" value="5" class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
                 </div>
-                
                 <div>
                     <label for="longBreakLength" class="block text-sm font-semibold mb-2">Long Break (minutes)</label>
-                    <input type="number" id="longBreakLength" min="1" max="60" value="15" 
-                           class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
+                    <input type="number" id="longBreakLength" min="1" max="60" value="15" class="w-full px-4 py-3 rounded-lg bg-white/20 border border-white/30 font-semibold focus:outline-none focus:ring-2 focus:ring-white/50 touch-button">
                 </div>
             </div>
-            
             <div class="flex flex-col sm:flex-row gap-3 mt-8">
-                <button id="saveSettings" class="button-primary flex-1 py-3 rounded-xl font-semibold text-white touch-button">
-                    Save Settings
-                </button>
-                <button id="cancelSettings" class="button-secondary flex-1 py-3 rounded-xl font-semibold text-white touch-button">
-                    Cancel
-                </button>
+                <button id="saveSettings" class="button-primary flex-1 py-3 rounded-xl font-semibold touch-button">Save Settings</button>
+                <button id="cancelSettings" class="button-secondary flex-1 py-3 rounded-xl font-semibold touch-button">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- Confirmation Modal -->
     <div id="confirmationModal" class="custom-modal-overlay">
         <div class="custom-modal-content">
             <h3 id="modalTitle" class="text-xl font-bold mb-4">Are you sure?</h3>
             <p id="modalMessage" class="mb-6">This action cannot be undone.</p>
             <div class="flex gap-4">
-                <button id="confirmBtn" class="button-primary flex-1 py-3 rounded-xl font-semibold text-white touch-button bg-red-500/80">Confirm</button>
-                <button id="cancelBtn" class="button-secondary flex-1 py-3 rounded-xl font-semibold text-white touch-button">Cancel</button>
+                <button id="confirmBtn" class="button-primary flex-1 py-3 rounded-xl font-semibold touch-button bg-red-500/80">Confirm</button>
+                <button id="cancelBtn" class="button-secondary flex-1 py-3 rounded-xl font-semibold touch-button">Cancel</button>
             </div>
         </div>
     </div>
 
-
-    <!-- Footer -->
     <footer class="w-full flex justify-center py-4">
         <div class="glass-effect rounded-2xl px-4 sm:px-6 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
             <span class="opacity-80">Created by</span>
-            <span class="font-bold text-white">Sazzy</span>
+            <span class="font-bold">Sazzy</span>
             <span class="opacity-60">•</span>
-            <a href="https://instagram.com/naimsazzad" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               class="flex items-center gap-1 sm:gap-2 hover:text-pink-300 transition-colors duration-300 touch-button">
-                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                </svg>
+            <a href="https://instagram.com/naimsazzad" target="_blank" rel="noopener noreferrer" class="flex items-center gap-1 sm:gap-2 hover:text-pink-300 transition-colors duration-300 touch-button">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
                 <span class="hidden sm:inline">@naimsazzad</span>
                 <span class="sm:hidden">IG</span>
             </a>
@@ -427,25 +336,13 @@
     </footer>
 
     <script>
-        // ==================== STATE MANAGEMENT ====================
-        
         const timerState = {
-            isRunning: false,
-            currentMode: 'focus',
-            timeRemaining: 25 * 60,
-            timerInterval: null,
-            completedChapters: 0,
-            totalChapters: 12,
-            durations: {
-                focus: 25,
-                shortBreak: 5,
-                longBreak: 15
-            },
+            isRunning: false, currentMode: 'focus', timeRemaining: 25 * 60,
+            timerInterval: null, completedChapters: 0, totalChapters: 12,
+            durations: { focus: 25, shortBreak: 5, longBreak: 15 },
             focusSessionsCompleted: 0
         };
 
-        // ==================== DOM ELEMENTS ====================
-        
         const elements = {
             timerDisplay: document.getElementById('timerDisplay'),
             startPauseBtn: document.getElementById('startPauseBtn'),
@@ -473,10 +370,12 @@
             modalMessage: document.getElementById('modalMessage'),
             confirmBtn: document.getElementById('confirmBtn'),
             cancelBtn: document.getElementById('cancelBtn'),
-            wigglyBorder: document.getElementById('wigglyBorder')
+            wigglyBorder: document.getElementById('wigglyBorder'),
+            themeToggleBtn: document.getElementById('themeToggleBtn'),
+            sunIcon: document.getElementById('sunIcon'),
+            moonIcon: document.getElementById('moonIcon'),
+            fullscreenBtn: document.getElementById('fullscreenBtn')
         };
-
-        // ==================== LOCALSTORAGE ====================
 
         function saveStateToLocalStorage() {
             try {
@@ -484,12 +383,11 @@
                     durations: timerState.durations,
                     totalChapters: timerState.totalChapters,
                     completedChapters: timerState.completedChapters,
-                    focusSessionsCompleted: timerState.focusSessionsCompleted
+                    focusSessionsCompleted: timerState.focusSessionsCompleted,
+                    theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light'
                 };
                 localStorage.setItem('chapterFlowState', JSON.stringify(stateToSave));
-            } catch (error) {
-                console.error("Could not save state to localStorage:", error);
-            }
+            } catch (error) { console.error("Could not save state to localStorage:", error); }
         }
 
         function loadStateFromLocalStorage() {
@@ -498,14 +396,20 @@
                 if (savedState) {
                     const parsedState = JSON.parse(savedState);
                     Object.assign(timerState, parsedState);
+                    if (parsedState.theme) {
+                        setTheme(parsedState.theme);
+                    } else {
+                        // Fallback for older saved states
+                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                        setTheme(prefersDark ? 'dark' : 'light');
+                    }
+                } else {
+                     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                     setTheme(prefersDark ? 'dark' : 'light');
                 }
-            } catch (error) {
-                console.error("Could not load state from localStorage:", error);
-            }
+            } catch (error) { console.error("Could not load state from localStorage:", error); }
         }
 
-        // ==================== UTILITY FUNCTIONS ====================
-        
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = seconds % 60;
@@ -517,68 +421,38 @@
                 const audioContext = new (window.AudioContext || window.webkitAudioContext)();
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
                 oscillator.type = 'sine';
                 oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
                 oscillator.frequency.linearRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-                
                 gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.5);
-                
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.5);
-            } catch (error) {
-                console.log('Audio not supported on this device');
-            }
+            } catch (error) { console.log('Audio not supported on this device'); }
         }
 
         function updateTabTitle() {
-            if (timerState.isRunning) {
-                const timeStr = formatTime(timerState.timeRemaining);
-                const mode = timerState.currentMode.charAt(0).toUpperCase() + timerState.currentMode.slice(1);
-                document.title = `${timeStr} - ${mode} | ChapterFlow`;
-            } else {
-                document.title = 'ChapterFlow - Focus Timer';
-            }
+            document.title = timerState.isRunning ? `${formatTime(timerState.timeRemaining)} - ${timerState.currentMode.charAt(0).toUpperCase() + timerState.currentMode.slice(1)} | ChapterFlow` : 'ChapterFlow - Focus Timer';
         }
-
-        // ==================== CONFIRMATION MODAL ====================
 
         function showConfirmation(title, message, onConfirm) {
             elements.modalTitle.textContent = title;
             elements.modalMessage.textContent = message;
             elements.confirmationModal.classList.add('visible');
-
-            const confirmHandler = () => {
-                onConfirm();
-                hideConfirmation();
-                cleanup();
-            };
-
-            const cancelHandler = () => {
-                hideConfirmation();
-                cleanup();
-            };
-            
+            const confirmHandler = () => { onConfirm(); hideConfirmation(); cleanup(); };
+            const cancelHandler = () => { hideConfirmation(); cleanup(); };
             const cleanup = () => {
                 elements.confirmBtn.removeEventListener('click', confirmHandler);
                 elements.cancelBtn.removeEventListener('click', cancelHandler);
-            }
-
+            };
             elements.confirmBtn.addEventListener('click', confirmHandler);
             elements.cancelBtn.addEventListener('click', cancelHandler);
         }
 
-        function hideConfirmation() {
-            elements.confirmationModal.classList.remove('visible');
-        }
+        function hideConfirmation() { elements.confirmationModal.classList.remove('visible'); }
 
-
-        // ==================== CHAPTER PROGRESS FUNCTIONS ====================
-        
         function updateCurrentTask() {
             const nextChapter = timerState.completedChapters + 1;
             if (timerState.completedChapters >= timerState.totalChapters) {
@@ -593,25 +467,17 @@
         function completeChapter() {
             if (timerState.completedChapters < timerState.totalChapters) {
                 timerState.completedChapters++;
-                updateProgressUI();
-                updateCurrentTask();
-                saveStateToLocalStorage();
-                
+                updateProgressUI(); updateCurrentTask(); saveStateToLocalStorage();
                 playNotificationSound();
-                
                 elements.completedChaptersSpan.style.transform = 'scale(1.2)';
-                setTimeout(() => {
-                    elements.completedChaptersSpan.style.transform = 'scale(1)';
-                }, 300);
+                setTimeout(() => { elements.completedChaptersSpan.style.transform = 'scale(1)'; }, 300);
             }
         }
 
         function updateTotalChapters() {
             const newTotal = parseInt(elements.totalChaptersInput.value) || 1;
             timerState.totalChapters = Math.max(1, Math.min(100, newTotal));
-            updateProgressUI();
-            updateCurrentTask();
-            saveStateToLocalStorage();
+            updateProgressUI(); updateCurrentTask(); saveStateToLocalStorage();
         }
 
         function updateProgressUI() {
@@ -621,89 +487,59 @@
         }
         
         function resetProgress() {
-            showConfirmation(
-                "Reset All Progress?",
-                "This will reset your completed chapters and focus sessions to zero. This action cannot be undone.",
-                () => {
-                    timerState.completedChapters = 0;
-                    timerState.focusSessionsCompleted = 0;
-                    updateProgressUI();
-                    updateCurrentTask();
-                    resetTimer(); // Also reset the current timer
-                    saveStateToLocalStorage();
-                }
-            );
+            showConfirmation("Reset All Progress?", "This will reset your completed chapters and focus sessions to zero. This action cannot be undone.", () => {
+                timerState.completedChapters = 0;
+                timerState.focusSessionsCompleted = 0;
+                updateProgressUI(); updateCurrentTask(); resetTimer(); saveStateToLocalStorage();
+            });
         }
 
-        // ==================== TIMER CORE FUNCTIONS ====================
-        
         function updateDisplay() {
             elements.timerDisplay.textContent = formatTime(timerState.timeRemaining);
-            updateTabTitle();
-            updateWigglyBorder();
+            updateTabTitle(); updateWigglyBorder();
         }
 
         function updateWigglyBorder() {
             const totalTime = timerState.durations[timerState.currentMode] * 60;
-            const timeRemaining = timerState.timeRemaining;
-            const timeElapsed = totalTime - timeRemaining;
+            const timeElapsed = totalTime - timerState.timeRemaining;
             const progressPercent = (timeElapsed / totalTime) * 100;
-            
             const wigglyPath = document.getElementById('wigglyPath');
             if (!wigglyPath) return;
-            
-            // Generate more wiggly path as time progresses
             const wiggleIntensity = Math.min(progressPercent / 100, 1);
             const baseRadius = 80;
-            const wiggleAmount = 5 + (wiggleIntensity * 15); // Increases from 5 to 20
-            
-            // Create organic wiggly path
+            const wiggleAmount = 5 + (wiggleIntensity * 15);
             let pathData = `M${100 + baseRadius},100 `;
-            
             for (let i = 0; i <= 16; i++) {
                 const angle = (i / 16) * Math.PI * 2;
                 const wiggle = Math.sin(angle * 4 + wiggleIntensity * 10) * wiggleAmount * wiggleIntensity;
                 const wiggle2 = Math.cos(angle * 6 + wiggleIntensity * 8) * (wiggleAmount * 0.5) * wiggleIntensity;
-                
                 const radius = baseRadius + wiggle + wiggle2;
                 const x = 100 + Math.cos(angle) * radius;
                 const y = 100 + Math.sin(angle) * radius;
-                
-                if (i === 0) {
-                    pathData += `M${x},${y} `;
-                } else {
-                    // Use smooth curves for organic feel
+                if (i === 0) { pathData += `M${x},${y} `; }
+                else {
                     const prevAngle = ((i - 1) / 16) * Math.PI * 2;
                     const prevWiggle = Math.sin(prevAngle * 4 + wiggleIntensity * 10) * wiggleAmount * wiggleIntensity;
                     const prevWiggle2 = Math.cos(prevAngle * 6 + wiggleIntensity * 8) * (wiggleAmount * 0.5) * wiggleIntensity;
                     const prevRadius = baseRadius + prevWiggle + prevWiggle2;
                     const prevX = 100 + Math.cos(prevAngle) * prevRadius;
                     const prevY = 100 + Math.sin(prevAngle) * prevRadius;
-                    
-                    const cp1x = prevX + Math.cos(prevAngle + Math.PI/2) * 10;
-                    const cp1y = prevY + Math.sin(prevAngle + Math.PI/2) * 10;
-                    const cp2x = x + Math.cos(angle - Math.PI/2) * 10;
-                    const cp2y = y + Math.sin(angle - Math.PI/2) * 10;
-                    
+                    const cp1x = prevX + Math.cos(prevAngle + Math.PI / 2) * 10;
+                    const cp1y = prevY + Math.sin(prevAngle + Math.PI / 2) * 10;
+                    const cp2x = x + Math.cos(angle - Math.PI / 2) * 10;
+                    const cp2y = y + Math.sin(angle - Math.PI / 2) * 10;
                     pathData += `C${cp1x},${cp1y} ${cp2x},${cp2y} ${x},${y} `;
                 }
             }
             pathData += 'Z';
-            
             wigglyPath.setAttribute('d', pathData);
-            
-            // Update border style based on urgency
             wigglyPath.classList.remove('urgent', 'critical');
-            if (progressPercent > 80) {
-                wigglyPath.classList.add('critical');
-            } else if (progressPercent > 60) {
-                wigglyPath.classList.add('urgent');
-            }
+            if (progressPercent > 80) { wigglyPath.classList.add('critical'); }
+            else if (progressPercent > 60) { wigglyPath.classList.add('urgent'); }
         }
 
         function setTimerDuration() {
-            const duration = timerState.durations[timerState.currentMode];
-            timerState.timeRemaining = duration * 60;
+            timerState.timeRemaining = timerState.durations[timerState.currentMode] * 60;
             updateDisplay();
         }
 
@@ -712,14 +548,10 @@
             timerState.isRunning = true;
             elements.startPauseBtn.textContent = 'PAUSE';
             elements.wigglyBorder.classList.add('is-animating');
-            
             timerState.timerInterval = setInterval(() => {
                 timerState.timeRemaining--;
                 updateDisplay();
-                
-                if (timerState.timeRemaining <= 0) {
-                    completeTimerSession();
-                }
+                if (timerState.timeRemaining <= 0) { completeTimerSession(); }
             }, 1000);
         }
 
@@ -731,84 +563,57 @@
             elements.wigglyBorder.classList.remove('is-animating');
         }
 
-        function resetTimer() {
-            pauseTimer();
-            setTimerDuration();
-        }
+        function resetTimer() { pauseTimer(); setTimerDuration(); }
 
         function addFiveMinutes() {
             if (timerState.isRunning) {
                 timerState.timeRemaining += 5 * 60;
                 updateDisplay();
                 elements.addTimeBtn.style.transform = 'scale(0.95)';
-                setTimeout(() => {
-                    elements.addTimeBtn.style.transform = 'scale(1)';
-                }, 150);
+                setTimeout(() => { elements.addTimeBtn.style.transform = 'scale(1)'; }, 150);
             }
         }
 
         function finishEarly() {
             if (timerState.isRunning && timerState.currentMode === 'focus') {
-                pauseTimer();
-                completeChapter();
-                switchToBreakMode();
-                playNotificationSound();
+                pauseTimer(); completeChapter(); switchToBreakMode(); playNotificationSound();
             }
         }
 
         function completeTimerSession() {
-            pauseTimer();
-            playNotificationSound();
-            
+            pauseTimer(); playNotificationSound();
             if (timerState.currentMode === 'focus') {
                 timerState.focusSessionsCompleted++;
                 completeChapter();
             }
-            
             autoSwitchMode();
         }
 
-        // ==================== MODE SWITCHING FUNCTIONS ====================
-        
         function switchToBreakMode() {
-            if (timerState.focusSessionsCompleted > 0 && timerState.focusSessionsCompleted % 4 === 0) {
-                switchMode('longBreak');
-            } else {
-                switchMode('shortBreak');
-            }
+            switchMode(timerState.focusSessionsCompleted > 0 && timerState.focusSessionsCompleted % 4 === 0 ? 'longBreak' : 'shortBreak');
         }
 
         function autoSwitchMode() {
-            if (timerState.currentMode === 'focus') {
-                switchToBreakMode();
-            } else {
-                switchMode('focus');
-            }
+            switchMode(timerState.currentMode === 'focus' ? 'shortBreak' : 'focus');
         }
 
         function switchMode(mode) {
             pauseTimer();
             timerState.currentMode = mode;
-            
             document.querySelectorAll('.mode-btn').forEach(btn => {
                 btn.classList.remove('active', 'button-primary');
                 btn.classList.add('button-secondary');
             });
-            
             const activeBtn = elements[mode + 'Mode'] || elements.focusMode;
             activeBtn.classList.add('active', 'button-primary');
             activeBtn.classList.remove('button-secondary');
-            
             setTimerDuration();
         }
 
-        // ==================== SETTINGS FUNCTIONS ====================
-        
         function openSettings() {
             elements.focusLengthInput.value = timerState.durations.focus;
             elements.shortBreakLengthInput.value = timerState.durations.shortBreak;
             elements.longBreakLengthInput.value = timerState.durations.longBreak;
-            
             elements.settingsPanel.classList.remove('hidden');
             elements.settingsPanel.classList.add('flex');
         }
@@ -819,78 +624,75 @@
         }
 
         function saveSettings() {
-            const newFocus = Math.max(1, Math.min(120, parseInt(elements.focusLengthInput.value) || 25));
-            const newShortBreak = Math.max(1, Math.min(60, parseInt(elements.shortBreakLengthInput.value) || 5));
-            const newLongBreak = Math.max(1, Math.min(60, parseInt(elements.longBreakLengthInput.value) || 15));
-            
-            timerState.durations.focus = newFocus;
-            timerState.durations.shortBreak = newShortBreak;
-            timerState.durations.longBreak = newLongBreak;
-            
+            timerState.durations.focus = Math.max(1, Math.min(120, parseInt(elements.focusLengthInput.value) || 25));
+            timerState.durations.shortBreak = Math.max(1, Math.min(60, parseInt(elements.shortBreakLengthInput.value) || 5));
+            timerState.durations.longBreak = Math.max(1, Math.min(60, parseInt(elements.longBreakLengthInput.value) || 15));
             saveStateToLocalStorage();
-            
-            if (!timerState.isRunning) {
-                setTimerDuration();
-            }
-            
+            if (!timerState.isRunning) { setTimerDuration(); }
             closeSettings();
         }
 
-        // ==================== EVENT LISTENERS ====================
-        
-        function setupEventListeners() {
-            elements.startPauseBtn.addEventListener('click', () => {
-                timerState.isRunning ? pauseTimer() : startTimer();
-            });
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                elements.sunIcon.classList.add('hidden');
+                elements.moonIcon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                elements.sunIcon.classList.remove('hidden');
+                elements.moonIcon.classList.add('hidden');
+            }
+        }
 
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.contains('dark');
+            setTheme(isDark ? 'light' : 'dark');
+            saveStateToLocalStorage();
+        }
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        function setupEventListeners() {
+            elements.startPauseBtn.addEventListener('click', () => { timerState.isRunning ? pauseTimer() : startTimer(); });
             elements.resetBtn.addEventListener('click', resetTimer);
             elements.resetProgressBtn.addEventListener('click', resetProgress);
             elements.addTimeBtn.addEventListener('click', addFiveMinutes);
             elements.finishEarlyBtn.addEventListener('click', finishEarly);
-
             elements.focusMode.addEventListener('click', () => switchMode('focus'));
             elements.shortBreakMode.addEventListener('click', () => switchMode('shortBreak'));
             elements.longBreakMode.addEventListener('click', () => switchMode('longBreak'));
-
             elements.totalChaptersInput.addEventListener('change', updateTotalChapters);
-
             elements.settingsBtn.addEventListener('click', openSettings);
             elements.saveSettingsBtn.addEventListener('click', saveSettings);
             elements.cancelSettingsBtn.addEventListener('click', closeSettings);
-
-            elements.settingsPanel.addEventListener('click', (e) => {
-                if (e.target === elements.settingsPanel) closeSettings();
-            });
-
+            elements.settingsPanel.addEventListener('click', (e) => { if (e.target === elements.settingsPanel) closeSettings(); });
+            elements.themeToggleBtn.addEventListener('click', toggleTheme);
+            elements.fullscreenBtn.addEventListener('click', toggleFullscreen);
             document.addEventListener('keydown', (e) => {
                 if (document.activeElement.tagName === 'INPUT') return;
-                if (e.code === 'Space') {
-                    e.preventDefault();
-                    elements.startPauseBtn.click();
-                } else if (e.code === 'KeyR') {
-                    e.preventDefault();
-                    resetTimer();
-                } else if (e.code === 'Escape') {
-                    closeSettings();
-                    hideConfirmation();
-                }
+                if (e.code === 'Space') { e.preventDefault(); elements.startPauseBtn.click(); }
+                else if (e.code === 'KeyR') { e.preventDefault(); resetTimer(); }
+                else if (e.code === 'Escape') { closeSettings(); hideConfirmation(); }
             });
         }
 
-        // ==================== INITIALIZATION ====================
-        
         function initializeApp() {
             loadStateFromLocalStorage();
-            
             updateProgressUI();
             updateCurrentTask();
             switchMode(timerState.currentMode);
-            
             setupEventListeners();
-            
             console.log('📚 ChapterFlow initialized successfully!');
-            console.log('💾 State loaded from localStorage.');
-            console.log('⌨️ Keyboard shortcuts: Space (start/pause), R (reset), Esc (close settings/modal)');
         }
 
         document.addEventListener('DOMContentLoaded', initializeApp);
