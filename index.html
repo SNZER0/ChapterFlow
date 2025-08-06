@@ -33,6 +33,125 @@
             text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             line-height: 1;
         }
+
+        /* Circular Timer Container */
+        .circular-timer {
+            position: relative;
+            width: clamp(200px, 40vw, 300px);
+            height: clamp(200px, 40vw, 300px);
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Inner Circle */
+        .timer-circle {
+            position: relative;
+            width: 85%;
+            height: 85%;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Wiggly Border SVG */
+        .wiggly-border {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Wiggly path animations */
+        .wiggly-path {
+            fill: none;
+            stroke: #667eea;
+            stroke-width: 4;
+            filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.5));
+            animation: wigglePulse 3s ease-in-out infinite;
+        }
+
+        .wiggly-path.urgent {
+            stroke: #f093fb;
+            stroke-width: 5;
+            animation: wigglePulseUrgent 1.5s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(240, 147, 251, 0.7));
+        }
+
+        .wiggly-path.critical {
+            stroke: #f5576c;
+            stroke-width: 6;
+            animation: wigglePulseCritical 1s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(245, 87, 108, 0.8));
+        }
+
+        /* Wiggle animations with increasing intensity */
+        @keyframes wigglePulse {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: scale(1.02) rotate(1deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes wigglePulseUrgent {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 0.9;
+            }
+            25% { 
+                transform: scale(1.03) rotate(-1.5deg);
+                opacity: 1;
+            }
+            75% { 
+                transform: scale(1.03) rotate(1.5deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes wigglePulseCritical {
+            0%, 100% { 
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+            20% { 
+                transform: scale(1.05) rotate(-2deg);
+                opacity: 0.9;
+            }
+            40% { 
+                transform: scale(1.04) rotate(2deg);
+                opacity: 1;
+            }
+            60% { 
+                transform: scale(1.05) rotate(-1.5deg);
+                opacity: 0.95;
+            }
+            80% { 
+                transform: scale(1.04) rotate(1.5deg);
+                opacity: 1;
+            }
+        }
+
+        /* Timer text inside circle */
+        .circular-timer-text {
+            font-size: clamp(1.8rem, 8vw, 3rem);
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+        }
         
         .button-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -177,8 +296,27 @@
                 </button>
             </div>
 
-            <!-- Timer Display -->
-            <div class="timer-display mb-6 sm:mb-8 text-white" id="timerDisplay" aria-live="polite">25:00</div>
+            <!-- Circular Timer Display -->
+            <div class="mb-6 sm:mb-8">
+                <div class="circular-timer">
+                    <!-- Wiggly Border SVG -->
+                    <svg class="wiggly-border" viewBox="0 0 200 200">
+                        <path id="wigglyPath" class="wiggly-path" d="M100,20 
+                            C120,25 140,35 155,55 
+                            C170,75 175,95 170,115 
+                            C165,135 150,150 130,160 
+                            C110,170 90,170 70,160 
+                            C50,150 35,135 30,115 
+                            C25,95 30,75 45,55 
+                            C60,35 80,25 100,20 Z"/>
+                    </svg>
+                    
+                    <!-- Inner Timer Circle -->
+                    <div class="timer-circle">
+                        <div id="timerDisplay" class="circular-timer-text" aria-live="polite">25:00</div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Action Buttons -->
             <div class="space-y-4">
@@ -498,6 +636,65 @@
         function updateDisplay() {
             elements.timerDisplay.textContent = formatTime(timerState.timeRemaining);
             updateTabTitle();
+            updateWigglyBorder();
+        }
+
+        function updateWigglyBorder() {
+            const totalTime = timerState.durations[timerState.currentMode] * 60;
+            const timeRemaining = timerState.timeRemaining;
+            const timeElapsed = totalTime - timeRemaining;
+            const progressPercent = (timeElapsed / totalTime) * 100;
+            
+            const wigglyPath = document.getElementById('wigglyPath');
+            if (!wigglyPath) return;
+            
+            // Generate more wiggly path as time progresses
+            const wiggleIntensity = Math.min(progressPercent / 100, 1);
+            const baseRadius = 80;
+            const wiggleAmount = 5 + (wiggleIntensity * 15); // Increases from 5 to 20
+            
+            // Create organic wiggly path
+            let pathData = `M${100 + baseRadius},100 `;
+            
+            for (let i = 0; i <= 16; i++) {
+                const angle = (i / 16) * Math.PI * 2;
+                const wiggle = Math.sin(angle * 4 + wiggleIntensity * 10) * wiggleAmount * wiggleIntensity;
+                const wiggle2 = Math.cos(angle * 6 + wiggleIntensity * 8) * (wiggleAmount * 0.5) * wiggleIntensity;
+                
+                const radius = baseRadius + wiggle + wiggle2;
+                const x = 100 + Math.cos(angle) * radius;
+                const y = 100 + Math.sin(angle) * radius;
+                
+                if (i === 0) {
+                    pathData += `M${x},${y} `;
+                } else {
+                    // Use smooth curves for organic feel
+                    const prevAngle = ((i - 1) / 16) * Math.PI * 2;
+                    const prevWiggle = Math.sin(prevAngle * 4 + wiggleIntensity * 10) * wiggleAmount * wiggleIntensity;
+                    const prevWiggle2 = Math.cos(prevAngle * 6 + wiggleIntensity * 8) * (wiggleAmount * 0.5) * wiggleIntensity;
+                    const prevRadius = baseRadius + prevWiggle + prevWiggle2;
+                    const prevX = 100 + Math.cos(prevAngle) * prevRadius;
+                    const prevY = 100 + Math.sin(prevAngle) * prevRadius;
+                    
+                    const cp1x = prevX + Math.cos(prevAngle + Math.PI/2) * 10;
+                    const cp1y = prevY + Math.sin(prevAngle + Math.PI/2) * 10;
+                    const cp2x = x + Math.cos(angle - Math.PI/2) * 10;
+                    const cp2y = y + Math.sin(angle - Math.PI/2) * 10;
+                    
+                    pathData += `C${cp1x},${cp1y} ${cp2x},${cp2y} ${x},${y} `;
+                }
+            }
+            pathData += 'Z';
+            
+            wigglyPath.setAttribute('d', pathData);
+            
+            // Update border style based on urgency
+            wigglyPath.classList.remove('urgent', 'critical');
+            if (progressPercent > 80) {
+                wigglyPath.classList.add('critical');
+            } else if (progressPercent > 60) {
+                wigglyPath.classList.add('urgent');
+            }
         }
 
         function setTimerDuration() {
