@@ -396,16 +396,11 @@
                 if (savedState) {
                     const parsedState = JSON.parse(savedState);
                     Object.assign(timerState, parsedState);
-                    if (parsedState.theme) {
-                        setTheme(parsedState.theme);
-                    } else {
-                        // Fallback for older saved states
-                        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                        setTheme(prefersDark ? 'dark' : 'light');
-                    }
+                    // If a theme is saved, use it. Otherwise, default to light.
+                    setTheme(parsedState.theme || 'light');
                 } else {
-                     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                     setTheme(prefersDark ? 'dark' : 'light');
+                     // No saved state, so default to light mode.
+                     setTheme('light');
                 }
             } catch (error) { console.error("Could not load state from localStorage:", error); }
         }
