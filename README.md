@@ -33,4 +33,4 @@
   <li>Themes & PWA Support</li>
 </ul>
 <p>⭐ Created by Sazzy <br>
-  Entirely vibe coded</p>
+  Mostly vibe coded</p>
