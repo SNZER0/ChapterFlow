@@ -1,6 +1,7 @@
-<img width="1899" height="927" alt="image" src="https://github.com/user-attachments/assets/d59043d3-57fc-4ee3-986a-27050f2cc892" />
-<h1>ChapterFlow - Focus Timer</h1>
+<h1>⏰ ChapterFlow - Focus Timer</h1>
 <p>A sleek Pomodoro-style focus timer to track chapters or tasks. Designed with a glassmorphism UI for a beautiful, productive experience.</p>
+
+<img width="1899" height="927" alt="image" src="https://github.com/user-attachments/assets/d59043d3-57fc-4ee3-986a-27050f2cc892" />
 
 <h2>✨ Features</h2>
 <ul>
